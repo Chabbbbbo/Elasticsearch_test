@@ -1,14 +1,9 @@
-
-"""Script that downloads a public dataset and streams it to an Elasticsearch cluster"""
-
 import csv
-from os.path import abspath, join, dirname, exists
 import tqdm
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import streaming_bulk
 
 DATASET_PATH = "221219_extract_file.csv"
-
 
 def download_dataset():
     with open(DATASET_PATH, 'r', encoding="UTF-8") as f:
@@ -105,7 +100,7 @@ def main():
     print("Loading data :)")
     number_of_docs = download_dataset()
 
-    es_host = 'localhost'  # URL or host (ex.'127.0.0.1')
+    es_host = 'localhost'  # -> insert AWS EC2 URL or host (ex.'127.0.0.1') 
     client = Elasticsearch(f"http://{es_host}:9200")
 
     print("Creating an index :)")
