@@ -1,0 +1,74 @@
+############################### with open + 하드코딩 #################################
+start_time = time.time()
+    with open("221219_extract_file.csv", mode="r",encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+
+        for idx, row in enumerate(reader):
+            doc = {
+                "_id": idx,
+                "TITLE" : row["TITLE"],
+                "URL" : row["URL"],
+                "DESCRIPTION" : row["DESCRIPTION"],
+                "DURATION" : row["DURATION"],
+                "PUBLISHED" : row["PUBLISHED"],
+                "VIEWS" : row["VIEWS"],
+                "LIKES" : row["LIKES"],
+                "TAGS" : row["TAGS"],
+                "CATEGORY" : row["CATEGORY"],
+                "CHANNEL" : row["CHANNEL"],
+                "TEXTS" : row["TEXTS"],
+                "HASHTAGS" : row["HASHTAGS"],
+                "USE_TEXTS" : row["USE_TEXTS"],
+                "GENSIM" : row["GENSIM"],
+                "KEYBERT" : row["KEYBERT"],
+                "AFTER_REMOVE_ADVERB" : row["AFTER_REMOVE_ADVERB"]
+            }
+            # yield doc
+end_time = time.time()
+print(f"Hard coding data done. time taken ===> {end_time - start_time:.5f}sec")
+############################### pd.read_csv + 하드코딩 #################################
+start_time = time.time()
+data = pd.read_csv("221219_extract_file.csv")
+for idx, row in data.iterrows():
+    doc = {
+            "_id": idx,
+            "TITLE" : row["TITLE"],
+            "URL" : row["URL"],
+            "DESCRIPTION" : row["DESCRIPTION"],
+            "DURATION" : row["DURATION"],
+            "PUBLISHED" : row["PUBLISHED"],
+            "VIEWS" : row["VIEWS"],
+            "LIKES" : row["LIKES"],
+            "TAGS" : row["TAGS"],
+            "CATEGORY" : row["CATEGORY"],
+            "CHANNEL" : row["CHANNEL"],
+            "TEXTS" : row["TEXTS"],
+            "HASHTAGS" : row["HASHTAGS"],
+            "USE_TEXTS" : row["USE_TEXTS"],
+            "GENSIM" : row["GENSIM"],
+            "KEYBERT" : row["KEYBERT"],
+            "AFTER_REMOVE_ADVERB" : row["AFTER_REMOVE_ADVERB"]
+        }
+end_time = time.time()
+print(f"pandas data done. time taken ===> {end_time - start_time:.5f}sec")
+
+############################### pd.read_csv + for #################################
+start_time = time.time()
+data = pd.read_csv("221219_extract_file.csv")
+colunms = [col for col in data]
+
+for idx, row in data.iterrows():
+
+    # 1행 doc생성
+    row_list = []
+    for i in range(len(colunms)):
+        row_data = [colunms[i], row[i]]
+        row_list.append(row_data)
+
+    doc = {
+            "_index": "youtube_data",
+            "_id": idx,
+            "_source": dict(row_list) # 각 행 dictionary 추가함
+            }
+end_time = time.time()
+print(f"for문 data done. time taken ===> {end_time - start_time:.5f}sec")
