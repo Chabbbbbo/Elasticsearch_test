@@ -5,6 +5,7 @@ from elasticsearch.helpers import streaming_bulk
 
 DATASET_PATH = "221219_extract_file.csv"
 
+
 def download_dataset():
     with open(DATASET_PATH, 'r', encoding="UTF-8") as f:
         return sum([1 for _ in f]) - 1
@@ -100,14 +101,14 @@ def main():
     print("Loading data :)")
     number_of_docs = download_dataset()
 
-    es_host = 'localhost'  # -> insert AWS EC2 URL or host (ex.'127.0.0.1') 
+    es_host = 'localhost'  # URL or host (ex.'127.0.0.1')
     client = Elasticsearch(f"http://{es_host}:9200")
 
-    print("Creating an index :)")
+    print("Creating an index :-)")
     index_name = "youtube_data"
     create_index(client, index_name)
 
-    print("=============== Indexing documents ===============")
+    print("Indexing documents :--)")
     progress = tqdm.tqdm(unit="docs", total=number_of_docs)
     successes = 0
     for ok, action in streaming_bulk(
@@ -116,6 +117,13 @@ def main():
         progress.update(1)
         successes += ok
     print("Indexed %d/%d documents" % (successes, number_of_docs))
+
+     # client refresh
+    client.indices.refresh(index=index_name)
+
+    # result check
+    res = client.search(index=index_name, body={'query':{'match_all':{}}})
+    print(res['hits']['hits'][:3])
 
 
 if __name__ == "__main__":
